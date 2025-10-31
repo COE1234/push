@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MURDER PARTY - LE PUSH</title>
+
+  <!-- Police moderne et claire -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ----- VARIABLES ----- */
+    :root {
+      --orange: #ff9900;
+      --rouge: #ff0000;
+      --fond: #000;
+      --clair: #ffffff;
+      --radius: 8px;
+      --max-width: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: url('images/A2822E90-36B1-481D-BC00-CD818C9E8DE8 2.PNG');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    /* overlay pour la lisibilité */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.95) 70%);
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: clamp(1.2rem, 2.5vw, 2.4rem) clamp(1rem, 4vw, 3rem);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* ----- LOGOS ----- */
+    .hero-logos {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      width: clamp(200px, 45vw, 340px);
+      height: auto;
+      filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
+    }
+
+    .sub_logo {
+      width: clamp(220px, 50vw, 360px);
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(0,0,0,0.6));
+    }
+
+    /* ----- TITRE ENIGME ----- */
+    .enigme-title {
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px rgba(0,0,0,0.7);
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    /* ----- 8 CASES ----- */
+    .letters {
+      display: flex;
+      justify-content: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.3rem;
+    }
+
+    .letter-input {
+      width: 2.8rem;
+      height: 3.2rem;
+      text-align: center;
+      font-size: 1.4rem;
+      border: 2px solid #ff0000;
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      border-radius: 8px;
+      outline: none;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+    }
+
+    .letter-input:focus {
+      box-shadow: 0 0 9px rgba(255,0,0,0.8);
+    }
+
+    /* ----- BOUTON VALIDER ----- */
+    #btn-valider {
+      background: #ff0000;
+      border: none;
+      padding: .7rem 1.6rem;
+      color: #fff;
+      font-size: 1.05rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: .2s;
+      display: none;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    #btn-valider.show { display: inline-block; }
+
+    #btn-valider:hover {
+      background: #c40000;
+      transform: scale(1.05);
+    }
+
+    /* ----- MESSAGE ----- */
+    #message {
+      min-height: 1.6rem;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 10px #000;
+      word-break: break-word;
+      font-weight: 500;
+    }
+
+    /* ----- SECTION LECTURE DES CARTES ----- */
+    #lecture-cartes {
+      display: none;
+      text-align: center;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,0,0,0.2);
+      border-radius: 12px;
+      padding: 1.5rem 1rem 2rem;
+      width: min(100%, 1000px);
+      backdrop-filter: blur(5px);
+    }
+
+    #lecture-cartes img {
+      max-width: 95%;
+      width: 500px;
+      border-radius: 10px;
+      margin-top: 1rem;
+      border: 2px solid rgba(255,0,0,0.5);
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      opacity: 0;
+      transition: opacity .8s ease-in-out;
+      cursor: zoom-in;
+    }
+
+    #lecture-cartes img.visible { opacity: 1; }
+
+    #btn-suivant {
+      margin-top: 1rem;
+      background: #ff0000;
+      border: none;
+      padding: .7rem 1.4rem;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ----- SECTION JEU (après énigme) ----- */
+    #galerie {
+      display: none;
+      animation: fadeIn 0.6s ease-in;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,0,0,0.2);
+      border-radius: 12px;
+      padding: 1.5rem 1rem 2rem;
+      backdrop-filter: blur(5px);
+      width: min(100%, 1000px);
+      text-align: center;
+    }
+
+    #galerie h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .game-intro {
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1.1rem;
+    }
+
+    /* ----- grille cartes + inputs ----- */
+    .code-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .code-card {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: .6rem .6rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .code-card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: zoom-in;
+    }
+
+    .code-card small {
+      font-size: .7rem;
+      opacity: .6;
+    }
+
+    .num-input {
+      width: 3rem;
+      text-align: center;
+      font-size: 1.25rem;
+      border: 2px solid rgba(255,0,0,0.5);
+      border-radius: 6px;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+    }
+
+    #btn-check-code {
+      margin-top: 1.2rem;
+      background: #ff0000;
+      border: none;
+      padding: .65rem 1.4rem;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ----- LABYRINTHE 20x20 ----- */
+    #labyrinthe-wrapper {
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    .labyrinthe {
+      position:relative;
+      width: min(90vw, 540px);
+      aspect-ratio: 1/1;
+      margin: 1rem auto;
+      background: rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: repeat(20, 1fr);
+      grid-template-rows: repeat(20, 1fr);
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .cell {
+      background: rgba(255,255,255,0.025);
+      border-radius: 2px;
+      font-size: .5rem;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .cell.start {
+      background: rgba(0,255,0,0.25);
+      font-weight: 600;
+    }
+
+    .cell.end {
+      background: rgba(255,0,0,0.35);
+      font-weight: 600;
+    }
+
+    .cell.wall {
+      background: rgba(0,0,0,0.9);
+      border: 1px solid rgba(255,0,0,0.25);
+    }
+
+    .voiture {
+      position:absolute;
+      width: calc(100% / 20 - 2px);
+      aspect-ratio: 1/1;
+      background: url('images/voiture.png') center/contain no-repeat;
+      transition: transform .15s ease;
+      pointer-events:none;
+    }
+
+    .controls {
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:1rem;
+    }
+
+    .controls button {
+      width:60px;
+      height:60px;
+      border:none;
+      border-radius:50%;
+      background:rgba(255,0,0,0.85);
+      color:#fff;
+      font-size:1.2rem;
+      cursor:pointer;
+      box-shadow:0 0 10px rgba(0,0,0,0.4);
+    }
+
+    .controls button:active { transform:scale(.95); }
+
+    .success-lab {
+      margin-top:1rem;
+      font-weight:700;
+      color:#00ff88;
+      display:none;
+    }
+
+    /* ----- POPUP ZOOM ----- */
+    #zoom-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    #zoom-overlay img {
+      max-width: 98vw;
+      max-height: 95vh;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    }
+
+    #zoom-close {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.2rem;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 999px;
+      width: 40px;
+      height: 40px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    /* ----- FAUX MMS ----- */
+    #fakeMMS {
+      position: fixed;
+      bottom: 1.2rem;
+      right: 1.2rem;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid #ff0000;
+      border-radius: 12px;
+      padding: 1rem 1.4rem;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      z-index: 9999;
+      box-shadow: 0 0 15px rgba(255,0,0,0.5);
+      cursor: pointer;
+      animation: blink 1s infinite alternate;
+      display: none;
+    }
+    #fakeMMS.show { display: block; }
+
+    @keyframes blink {
+      from { box-shadow: 0 0 15px rgba(255,0,0,0.5); }
+      to   { box-shadow: 0 0 25px rgba(255,255,255,0.9); }
+    }
+
+    .mms-content {
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ----- ÉNIGME 4 : FACTURES UBER ----- */
+    #factures-uber {
+      display: none;
+      margin-top: 1.5rem;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,0,0,0.2);
+      border-radius: 12px;
+      padding: 1.3rem 1rem 1.6rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .factures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .facture-card img {
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid rgba(255,0,0,0.35);
+      cursor: zoom-in;
+    }
+
+    /* ----- ÉNIGME 5 : DATE DE NAISSANCE ----- */
+    #enigme5 {
+      display: none;
+      margin-top: 1.2rem;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.2rem 1rem 1.4rem;
+    }
+
+    #btn-show-enigme5 {
+      margin-top: 1.2rem;
+      background: #ff0000;
+      border: none;
+      padding: .55rem 1.3rem;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #btn-validate-date {
+      margin-top: .8rem;
+      background: #ff0000;
+      border: none;
+      padding: .5rem 1.3rem;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #date-naissance {
+      margin-top: .7rem;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      padding: .35rem .5rem;
+      color: #fff;
+    }
+
+    #date-result {
+      margin-top: .6rem;
+      font-weight: 600;
+    }
+
+    /* ----- TIMER 15 MIN ----- */
+    #chrono-block {
+      display: none;
+      margin-top: 1.2rem;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 1rem 1.3rem 1.2rem;
+    }
+    #chrono-title {
+      font-weight: 600;
+      margin-bottom: .4rem;
+    }
+    #chrono-timer {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ff5f5f;
+    }
+    #chrono-sub {
+      font-size: .85rem;
+      opacity: .8;
+      margin-top: .4rem;
+    }
+
+    /* ----- MOCKUP iPHONE ----- */
+    #iphone-lock {
+      display: none;
+      margin-top: 1.5rem;
+      justify-content: center;
+    }
+    .iphone-frame {
+      width: 280px;
+      height: 540px;
+      background: radial-gradient(circle at 10% 10%, #222 0%, #000 100%);
+      border: 10px solid #222;
+      border-radius: 36px;
+      position: relative;
+      box-shadow: 0 0 25px rgba(0,0,0,.7);
+    }
+    .iphone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 25px;
+      background: #000;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+    }
+    .iphone-screen {
+      position: absolute;
+      inset: 35px 10px 12px 10px;
+      background: linear-gradient(160deg, rgba(0,0,0,.5), rgba(255,255,255,.02));
+      border-radius: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 1.2rem;
+      gap: .8rem;
+    }
+    .iphone-time {
+      font-size: 2.4rem;
+      font-weight: 600;
+    }
+    .iphone-text {
+      font-size: .8rem;
+      opacity: .7;
+    }
+    .code-dots {
+      display: flex;
+      gap: .5rem;
+      margin-top: 1rem;
+    }
+    .code-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,.3);
+    }
+    .code-dot.filled {
+      background: #fff;
+    }
+    .keypad {
+      margin-top: 1.4rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .7rem;
+      width: 80%;
+    }
+    .keypad button {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff;
+      border-radius: 999px;
+      height: 52px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .keypad button:active {
+      transform: scale(.96);
+    }
+
+    /* ----- GALLERIE FINAL (6 PHOTOS) ----- */
+    #final-photos {
+      display: none;
+      margin-top: 1.5rem;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1.1rem 1rem 1.5rem;
+    }
+    .final-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .final-grid img {
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.05);
+      cursor: zoom-in;
+    }
+
+    /* ----- RESPONSIVE ----- */
+    @media (max-width: 400px) {
+      .letters { gap: .35rem; }
+      .letter-input { width: 2.5rem; height: 3rem; font-size: 1.2rem; }
+      .app { padding-inline: 1rem; }
+      .controls button { width:56px; height:56px; }
+      .iphone-frame { transform: scale(.9); }
+    }
+
+    @media (min-width: 1300px) {
+      body { background-attachment: fixed; }
+      .app { max-width: 900px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <!-- LOGOS -->
+    <div class="hero-logos">
+      <img src="images/g1851.png" alt="Le Push" class="logo">
+      <img src="images/g177.png" alt="Murder Party" class="sub_logo">
+    </div>
+
+    <!-- TITRE ÉNIGME -->
+    <h2 class="enigme-title">ÉNIGME N°1</h2>
+
+    <!-- 8 CASES -->
+    <div class="letters" id="letters">
+      <input maxlength="1" class="letter-input" data-index="0" />
+      <input maxlength="1" class="letter-input" data-index="1" />
+      <input maxlength="1" class="letter-input" data-index="2" />
+      <input maxlength="1" class="letter-input" data-index="3" />
+      <input maxlength="1" class="letter-input" data-index="4" />
+      <input maxlength="1" class="letter-input" data-index="5" />
+      <input maxlength="1" class="letter-input" data-index="6" />
+      <input maxlength="1" class="letter-input" data-index="7" />
+    </div>
+
+    <!-- BOUTON -->
+    <button type="button" id="btn-valider" onclick="verifier()">VALIDER</button>
+
+    <!-- MESSAGE -->
+    <div id="message" aria-live="polite"></div>
+
+    <!-- SECTION LECTURE DES CARTES -->
+    <section id="lecture-cartes">
+      <!-- TITRE ÉNIGME -->
+      <h2 class="enigme-title">ÉNIGME N°2</h2>
+      <h3>CONNAISSEZ-VOUS RÉELLEMENT L'ÉQUIPE DU PUSH...</h3>
+      <p>Lisez attentivement chaque carte avant de commencer le mini-jeu.</p>
+      <img id="image-carte" src="" alt="Carte d'identité">
+      <div><button id="btn-suivant">Carte suivante</button></div>
+    </section>
+
+    <!-- GALERIE / MINI-JEU AVEC CODE -->
+    <section id="galerie">
+      <h3>Associez correctement chaque numéro à la bonne carte</h3>
+      <p class="game-intro">- Mon premier en a 36525 mais on dit plutôt de lui qu'il en a 100</p>
+      <p class="game-intro">- Avec mon deuxième on refait Paris, surtout si elle a des dents</p>
+      <p class="game-intro">- Mon troisième est la 14ème des 26 </p>
+      <p class="game-intro">- Si vous n'aimez pas le café, vous pouvez prendre mon quatrième</p>
+
+      <div class="code-grid" id="codeGrid">
+        <!-- rempli en JS -->
+      </div>
+
+      <button id="btn-check-code">VÉRIFIER LE CODE</button>
+
+      <!-- LABYRINTHE (apparait une fois le code correct) -->
+      <div id="labyrinthe-wrapper">
+        <!-- TITRE ÉNIGME -->
+        <h2 class="enigme-title">ÉNIGME N°3</h2>
+        <p style="font-size:.9rem;opacity:.8">
+          La voiture part de <b>Lille</b>et doit atteindre <b>Le Push</b>.<br>
+        </p>
+        <div class="labyrinthe" id="labyrinthe"></div>
+        <div class="controls">
+          <button id="btn-up">⬆️</button>
+          <button id="btn-left">⬅️</button>
+          <button id="btn-right">➡️</button>
+          <button id="btn-down">⬇️</button>
+        </div>
+        <div class="success-lab" id="successLab">Bravo ! Tu es arrivé au Push 🎉</div>
+      </div>
+
+      <!-- ÉNIGME 4 : FACTURES UBER (ajout) -->
+      <section id="factures-uber">
+        <h2 class="enigme-title">ÉNIGME N°4</h2>
+        <p class="game-intro">Voici les 5 factures Uber que la police a réquisitionné. Comparez les heures, les trajets et les montants.</p>
+        <div class="factures-grid">
+          <div class="facture-card">
+            <img src="images/1.png" alt="Facture Uber 1"
+                 data-full="images/1.png"
+                 onclick="openZoom(this.dataset.full || this.src)">
+            <small>Facture #1</small>
+          </div>
+          <div class="facture-card">
+            <img src="images/2.png" alt="Facture Uber 2"
+                 data-full="images/2.png"
+                 onclick="openZoom(this.dataset.full || this.src)">
+            <small>Facture #2</small>
+          </div>
+          <div class="facture-card">
+            <img src="images/3.png" alt="Facture Uber 3"
+                 data-full="images/3.png"
+                 onclick="openZoom(this.dataset.full || this.src)">
+            <small>Facture #3</small>
+          </div>
+          <div class="facture-card">
+            <img src="images/4.png" alt="Facture Uber 4"
+                 data-full="images/4.png"
+                 onclick="openZoom(this.dataset.full || this.src)">
+            <small>Facture #4</small>
+          </div>
+          <div class="facture-card">
+            <img src="images/5.png" alt="Facture Uber 5"
+                 data-full="images/5.png"
+                 onclick="openZoom(this.dataset.full || this.src)">
+            <small>Facture #5</small>
+          </div>
+        </div>
+        <!-- bouton pour passer à l'énigme 5 -->
+        <button id="btn-show-enigme5">Aidez la police…</button>
+
+        <!-- ÉNIGME 5 -->
+        <div id="enigme5">
+          <h2 class="enigme-title">ÉNIGME N°5</h2>
+          <p>Le capitaine Wacheux a récupéré l’acte de naissance du chef, mais malheureusement celui-ci est incomplet…<br>
+          <strong style="margin-top: .5rem">Il manque sa date de naissance.</strong></p>
+          <p style="opacity:.7;font-size:.85rem;margin-top:.4rem;">Sélectionnez la bonne date pour aider les forces de l'ordre !</p>
+          <input type="date" id="date-naissance" value="">
+          <br>
+          <button id="btn-validate-date">Valider la date</button>
+          <div id="date-result"></div>
+
+          <!-- bloc chrono -->
+          <div id="chrono-block">
+            <p id="chrono-title">⏱ Analyse de la scène de crime</p>
+            <div id="chrono-timer">15:00</div>
+            <p id="chrono-sub">Rendez-vous sur la scène de crime et collectez un maximum d’indices.</p>
+          </div>
+
+          <!-- Mockup iPhone -->
+          <div id="iphone-lock">
+            <div class="iphone-frame">
+              <div class="iphone-notch"></div>
+              <div class="iphone-screen">
+                <div class="iphone-time" id="iphone-time">21:18</div>
+                <div class="iphone-text">iPhone verrouillé</div>
+                <div class="iphone-text" style="opacity:.5">Entrez le code</div>
+                <div class="code-dots">
+                  <div class="code-dot" id="cd1"></div>
+                  <div class="code-dot" id="cd2"></div>
+                  <div class="code-dot" id="cd3"></div>
+                  <div class="code-dot" id="cd4"></div>
+                </div>
+                <div class="keypad">
+                  <button data-digit="1">1</button>
+                  <button data-digit="2">2</button>
+                  <button data-digit="3">3</button>
+                  <button data-digit="4">4</button>
+                  <button data-digit="5">5</button>
+                  <button data-digit="6">6</button>
+                  <button data-digit="7">7</button>
+                  <button data-digit="8">8</button>
+                  <button data-digit="9">9</button>
+                  <div></div>
+                  <button data-digit="0">0</button>
+                  <button id="clear-code">⌫</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gallerie finale 6 photos (emplacement pour TES images) -->
+          <div id="final-photos">
+            <h2 class="enigme-title">Les derniers messages du chef..</h2>
+            <p class="game-intro">Voici les 6 dernières images (faux messages) récupérées dans le téléphone du chef</p>
+            <div class="final-grid">
+              <img src="images/enquete1.png" alt="Message 1" data-full="images/enquete1.png">
+              <img src="images/enquete2.png" alt="Message 2" data-full="images/enquete2.png">
+              <img src="images/enquete3.png" alt="Message 3" data-full="images/enquete3.png">
+              <img src="images/enquete4.png" alt="Message 4" data-full="images/enquete4.png">
+              <img src="images/enquete5.png" alt="Message 5" data-full="images/enquete5.png">
+              <img src="images/enquete6.png" alt="Message 6" data-full="images/enquete6.png">
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- SON ET FAUX MMS -->
+    <audio id="notifSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-back-2575.mp3" preload="auto"></audio>
+
+    <div id="fakeMMS" class="hidden">
+      <div class="mms-content">
+        📩 <strong>NOUVEAU MMS REÇU</strong><br>
+        <small>(Clique pour ouvrir)</small>
+      </div>
+    </div>
+  </main>
+
+  <!-- POPUP ZOOM -->
+  <div id="zoom-overlay">
+    <button id="zoom-close">×</button>
+    <img id="zoom-img" src="" alt="">
+  </div>
+
+  <script>
+  /* ==========
+     1. LOGIQUE DES 8 CASES
+     ========== */
+  const inputs = document.querySelectorAll('.letter-input');
+  const btn = document.getElementById('btn-valider');
+  const message = document.getElementById('message');
+  const galerie = document.getElementById('galerie');
+  const lecture = document.getElementById('lecture-cartes');
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.toUpperCase();
+      if (input.value && index < inputs.length - 1) inputs[index + 1].focus();
+      checkAllFilled();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !input.value && index > 0) {
+        inputs[index - 1].focus();
+      }
+    });
+  });
+
+  function checkAllFilled() {
+    const allFilled = Array.from(inputs).every(inp => inp.value.trim() !== '');
+    btn.classList.toggle('show', allFilled);
+  }
+
+  function verifier() {
+    let mot = '';
+    inputs.forEach(inp => mot += inp.value);
+    mot = mot.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    if (mot === 'identite') {
+      message.style.color = '#00ff88';
+      message.textContent = 'Accès autorisé. Lis attentivement les cartes...';
+      lecture.style.display = 'block';
+      initLecture();
+    } else {
+      message.style.color = '#ff6b6b';
+      message.textContent = 'Mot incorrect. Le meurtrier se rapproche...';
+      galerie.style.display = 'none';
+    }
+  }
+
+  /* ==========
+     POPUP ZOOM
+     ========== */
+  const zoomOverlay = document.getElementById('zoom-overlay');
+  const zoomImg = document.getElementById('zoom-img');
+  const zoomClose = document.getElementById('zoom-close');
+
+  function openZoom(src){
+    zoomImg.src = src;
+    zoomOverlay.style.display = 'flex';
+  }
+
+  zoomClose.addEventListener('click', () => {
+    zoomOverlay.style.display = 'none';
+    zoomImg.src = '';
+  });
+
+  zoomOverlay.addEventListener('click', (e) => {
+    if (e.target === zoomOverlay) {
+      zoomOverlay.style.display = 'none';
+      zoomImg.src = '';
+    }
+  });
+
+  // 🔥 RENDRE TOUTES LES IMAGES ZOOMABLES (sécurité générale)
+  function makeAllImagesZoomable() {
+    const allImgs = document.querySelectorAll('img');
+    allImgs.forEach(img => {
+      if (!img.dataset.zoomed) {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', () => {
+          const full = img.dataset.full && img.dataset.full.trim() !== '' ? img.dataset.full : img.src;
+          openZoom(full);
+        });
+        img.dataset.zoomed = '1';
+      }
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (inputs[0]) inputs[0].focus();
+    // heure sur l'iPhone
+    const it = document.getElementById('iphone-time');
+    if (it) {
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mm = String(d.getMinutes()).padStart(2,'0');
+      it.textContent = hh + ':' + mm;
+    }
+    // activer le zoom partout
+    makeAllImagesZoomable();
+  });
+
+  /* ==========
+     3. LECTURE DES CARTES
+     ========== */
+  function initLecture() {
+    const cartes = [
+      'images/id1.png',
+      'images/id2.png',
+      'images/id3.png',
+      'images/id4.png',
+      'images/id5.png',
+      'images/id6.png',
+      'images/id7.png'
+    ];
+    const img = document.getElementById('image-carte');
+    const btnSuiv = document.getElementById('btn-suivant');
+    let index = 0;
+
+    img.src = cartes[index];
+    requestAnimationFrame(() => img.classList.add('visible'));
+    btnSuiv.textContent = 'Carte suivante';
+
+    btnSuiv.onclick = () => {
+      img.classList.remove('visible');
+      setTimeout(() => {
+        index++;
+        if (index < cartes.length) {
+          img.src = cartes[index];
+          if (index === cartes.length - 1) btnSuiv.textContent = 'Commencer le mini-jeu';
+          requestAnimationFrame(() => img.classList.add('visible'));
+        } else {
+          lecture.style.display = 'none';
+          galerie.style.display = 'block';
+          initCodeGame();
+          setTimeout(() => {
+            galerie.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 80);
+        }
+        makeAllImagesZoomable();
+      }, 400);
+    };
+  }
+
+  /* ==========
+     4. MINI-JEU NUMÉROS
+     ========== */
+  function initCodeGame() {
+    const ORDER = [
+      { id: 'id1.png', good: 3 },
+      { id: 'id2.png', good: 6 },
+      { id: 'id3.png', good: 2 },
+      { id: 'id4.png', good: 4 },
+      { id: 'id5.png', good: 5 },
+      { id: 'id6.png', good: 1 },
+      { id: 'id7.png', good: 7 }
+    ];
+
+    const grid = document.getElementById('codeGrid');
+    const btnCheck = document.getElementById('btn-check-code');
+
+    if (grid.dataset.ready === "1") return;
+    grid.dataset.ready = "1";
+
+    grid.innerHTML = '';
+    ORDER.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'code-card';
+      card.innerHTML = `
+        <img src="images/${item.id}" alt="Carte ${idx+1}" data-full="images/${item.id}">
+        <small>Carte ${idx+1}</small>
+        <input type="number" min="1" max="7" class="num-input" data-good="${item.good}">
+      `;
+      grid.appendChild(card);
+    });
+
+    makeAllImagesZoomable();
+
+    btnCheck.onclick = () => {
+      const inputsNum = grid.querySelectorAll('.num-input');
+      let ok = true;
+      inputsNum.forEach(inp => {
+        const expected = inp.dataset.good;
+        const val = inp.value.trim();
+        if (val !== expected) {
+          ok = false;
+          inp.style.borderColor = '#ff4d4d';
+        } else {
+          inp.style.borderColor = '#00ff88';
+        }
+      });
+
+      if (ok) {
+        document.getElementById('labyrinthe-wrapper').style.display = 'block';
+        initLabyrinthe();
+        triggerFakeMMS();
+      } else {
+        message.style.color = '#ff6b6b';
+        message.textContent = 'Ce n’est pas le bon code. Vérifiez bien les cartes 👀';
+      }
+    };
+  }
+
+  /* ==========
+     5. LABYRINTHE 20x20 ...
+     ========== */
+  function initLabyrinthe() {
+    const lab = document.getElementById('labyrinthe');
+    lab.innerHTML = '';
+    const rows = 20, cols = 20;
+
+    const map = [
+      [0,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1,0],
+      [0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0],
+      [1,1,1,0,1,0,1,0,1,0,1,1,0,1,1,0,1,0,0,0],
+      [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+      [0,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0],
+      [0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0],
+      [1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1,0],
+      [0,0,1,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0],
+      [0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0],
+      [0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0],
+      [0,1,0,1,1,1,1,0,1,1,1,1,0,1,1,0,1,0,1,0],
+      [0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0],
+      [1,1,0,1,0,1,1,1,0,1,1,1,1,0,1,1,1,0,1,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+      [0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0],
+      [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1],
+      [0,1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,1,0,1,0],
+      [1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0],
+      [1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,0,1,0],
+      [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]
+    ];
+
+    const startPos = { x: 0, y: 19 }; // Lille
+    const endPos   = { x: 19, y: 0 }; // Le Push
+
+    map[startPos.y][startPos.x] = 0;
+    map[endPos.y][endPos.x] = 0;
+
+    let carPos = { ...startPos };
+
+    // créer la grille
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        if (map[y][x] === 1) cell.classList.add('wall');
+        if (x === startPos.x && y === startPos.y) {
+          cell.classList.remove('wall');
+          cell.classList.add('start');
+          cell.textContent = 'Lille';
+        }
+        if (x === endPos.x && y === endPos.y) {
+          cell.classList.remove('wall');
+          cell.classList.add('end');
+          cell.textContent = 'Le Push';
+        }
+        lab.appendChild(cell);
+      }
+    }
+
+    const car = document.createElement('div');
+    car.className = 'voiture';
+    lab.appendChild(car);
+
+    function updateCar() {
+      const cellW = lab.clientWidth / cols;
+      const cellH = lab.clientHeight / rows;
+      car.style.transform = `translate(${carPos.x * cellW}px, ${carPos.y * cellH}px)`;
+      if (carPos.x === endPos.x && carPos.y === endPos.y) {
+        document.getElementById('successLab').style.display = 'block';
+
+        const factures = document.getElementById('factures-uber');
+        if (factures) {
+          factures.style.display = 'block';
+          setTimeout(() => {
+            factures.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 400);
+          makeAllImagesZoomable();
+        }
+      }
+    }
+
+    function resetToStart() {
+      carPos = { ...startPos };
+      updateCar();
+    }
+
+    // commandes inversées
+    document.getElementById('btn-left').onclick  = () => {
+      const nx = carPos.x + 1;
+      const ny = carPos.y;
+      if (nx < 0 || nx >= cols || map[ny][nx] === 1) {
+        resetToStart();
+      } else {
+        carPos.x = nx; updateCar();
+      }
+    };
+
+    document.getElementById('btn-right').onclick = () => {
+      const nx = carPos.x - 1;
+      const ny = carPos.y;
+      if (nx < 0 || nx >= cols || map[ny][nx] === 1) {
+        resetToStart();
+      } else {
+        carPos.x = nx; updateCar();
+      }
+    };
+
+    document.getElementById('btn-up').onclick    = () => {
+      const nx = carPos.x;
+      const ny = carPos.y + 1;
+      if (ny < 0 || ny >= rows || map[ny][nx] === 1) {
+        resetToStart();
+      } else {
+        carPos.y = ny; updateCar();
+      }
+    };
+
+    document.getElementById('btn-down').onclick  = () => {
+      const nx = carPos.x;
+      const ny = carPos.y - 1;
+      if (ny < 0 || ny >= rows || map[ny][nx] === 1) {
+        resetToStart();
+      } else {
+        carPos.y = ny; updateCar();
+      }
+    };
+
+    window.addEventListener('resize', updateCar);
+    updateCar();
+
+    // bouton "Aidez la police…" -> afficher énigme 5
+    const btnShow5 = document.getElementById('btn-show-enigme5');
+    const enigme5 = document.getElementById('enigme5');
+    if (btnShow5 && enigme5) {
+      btnShow5.onclick = () => {
+        enigme5.style.display = 'block';
+        setTimeout(() => {
+          enigme5.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+        makeAllImagesZoomable();
+      };
+    }
+
+    // validation de la date
+    const btnValidateDate = document.getElementById('btn-validate-date');
+    const dateInput = document.getElementById('date-naissance');
+    const dateResult = document.getElementById('date-result');
+    const chronoBlock = document.getElementById('chrono-block');
+    const chronoTimer = document.getElementById('chrono-timer');
+    const iphoneLock = document.getElementById('iphone-lock');
+
+    if (btnValidateDate && dateInput && dateResult) {
+      btnValidateDate.onclick = () => {
+        const val = dateInput.value;
+        if (val === '1979-05-11') {
+          dateResult.style.color = '#00ff88';
+          dateResult.textContent = 'Chronomètre lancé : vous avez 15 minutes pour aller analyser la scène de crime.';
+
+          if (chronoBlock) {
+            chronoBlock.style.display = 'block';
+            startCrimeTimer(0.1 * 60, chronoTimer, () => {
+              if (iphoneLock) {
+                iphoneLock.style.display = 'flex';
+                setTimeout(() => {
+                  iphoneLock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 120);
+                makeAllImagesZoomable();
+              }
+            });
+          }
+        } else {
+          dateResult.style.color = '#ff6b6b';
+          dateResult.textContent = '❌ Mauvaise date. Le capitaine Wacheux ne validera pas ça.';
+        }
+      };
+    }
+
+    // init keypad
+    initIphoneLock();
+  }
+
+  // ===== TIMER FUNC =====
+  function startCrimeTimer(durationSecs, displayEl, onFinish) {
+    let remaining = durationSecs;
+    function tick() {
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      if (displayEl) {
+        displayEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      }
+      if (remaining <= 0) {
+        if (onFinish) onFinish();
+        return;
+      }
+      remaining--;
+      setTimeout(tick, 1000);
+    }
+    tick();
+  }
+
+  // ===== iPHONE KEYPAD =====
+  function initIphoneLock() {
+    const iphoneLock = document.getElementById('iphone-lock');
+    if (!iphoneLock) return;
+    const buttons = iphoneLock.querySelectorAll('.keypad button[data-digit]');
+    const clearBtn = document.getElementById('clear-code');
+    const dots = [
+      document.getElementById('cd1'),
+      document.getElementById('cd2'),
+      document.getElementById('cd3'),
+      document.getElementById('cd4')
+    ];
+    const finalPhotos = document.getElementById('final-photos');
+
+    let current = '';
+
+    function refreshDots() {
+      dots.forEach((d,i) => {
+        if (i < current.length) d.classList.add('filled');
+        else d.classList.remove('filled');
+      });
+    }
+
+    function checkCode() {
+      if (current === '8760') {
+        if (finalPhotos) {
+          finalPhotos.style.display = 'block';
+          setTimeout(() => {
+            finalPhotos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 120);
+          makeAllImagesZoomable();
+        }
+      } else {
+        dots.forEach(d => {
+          d.style.background = 'rgba(255,0,0,0.6)';
+        });
+        setTimeout(() => {
+          current = '';
+          refreshDots();
+          dots.forEach(d => d.style.background = '');
+        }, 600);
+      }
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (current.length >= 4) return;
+        current += btn.dataset.digit;
+        refreshDots();
+        if (current.length === 4) {
+          checkCode();
+        }
+      });
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        current = '';
+        refreshDots();
+      });
+    }
+  }
+
+  /* ==========
+         6. FAUX MMS
+         ========== */
+  function triggerFakeMMS() {
+    const sound = document.getElementById('notifSound');
+    const fakeMMS = document.getElementById('fakeMMS');
+
+    setTimeout(() => {
+      sound.play().catch(()=>{});
+      fakeMMS.classList.add('show');
+      navigator.vibrate?.([200,100,200]);
+    }, 6000000);
+
+    fakeMMS.addEventListener('click', () => {
+      fakeMMS.innerHTML = `
+        <div class="mms-content">
+          📸 <strong>Message reçu !</strong><br>
+          <img src="images/mms3.jpg" alt="Indice suivant" style="max-width:200px;border-radius:8px;margin-top:.5rem;">
+        </div>
+      `;
+      makeAllImagesZoomable();
+    }, { once:true });
+  }
+
+  // ===== MODE DÉVEL =====
+  const DEV_MODE = false; // <- passe à false pour revenir au jeu normal
+
+  if (DEV_MODE) {
+    document.getElementById('lecture-cartes').style.display = 'block';
+    document.getElementById('galerie').style.display = 'block';
+    document.getElementById('labyrinthe-wrapper').style.display = 'block';
+
+    initCodeGame();
+    initLabyrinthe();
+
+    const factures = document.getElementById('factures-uber');
+    if (factures) {
+      factures.style.display = 'block';
+    }
+
+    const msg = document.getElementById('message');
+    if (msg) {
+      msg.style.color = '#00ff88';
+      msg.textContent = 'MODE DÉVELOPPEMENT : tout est affiché.';
+    }
+
+    const iphoneLock = document.getElementById('iphone-lock');
+    if (iphoneLock) iphoneLock.style.display = 'flex';
+    const finalPhotos = document.getElementById('final-photos');
+    if (finalPhotos) finalPhotos.style.display = 'block';
+
+    makeAllImagesZoomable();
+  }
+
+  </script>
+</body>
+</html>
