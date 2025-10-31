@@ -672,8 +672,8 @@
     <!-- GALERIE / MINI-JEU AVEC CODE -->
     <section id="galerie">
       <h3>Associez correctement chaque numéro à la bonne carte</h3>
-      <p class="game-intro">- Mon premier en a 36525 mais on dit plutôt de lui qu'il en a 100</p>
-      <p class="game-intro">- Avec mon deuxième on refait Paris, surtout si elle a des dents</p>
+      <p class="game-intro">- Mon premier en a 100 mais on dit plutôt de lui qu'il en a 36525</p>
+      <p class="game-intro">- Avec mon deuxième Paris serait en bouteille, surtout si elle a des dents</p>
       <p class="game-intro">- Mon troisième est la 14ème des 26 </p>
       <p class="game-intro">- Si vous n'aimez pas le café, vous pouvez prendre mon quatrième</p>
 
@@ -801,6 +801,19 @@
               <img src="enquete5.png" alt="Message 5" data-full="enquete5.png">
               <img src="enquete6.png" alt="Message 6" data-full="enquete6.png">
             </div>
+            <!-- 🔘 Bouton CONTINUER -->
+            <button id="btn-continue" style="
+              margin-top:1.5rem;
+              background:#ff0000;
+              border:none;
+              padding:.8rem 1.6rem;
+              border-radius:8px;
+              color:#fff;
+              font-weight:600;
+              font-size:1.05rem;
+              cursor:pointer;
+              letter-spacing:1px;
+            ">CONTINUER</button>
           </div>
 
         </div>
@@ -822,6 +835,37 @@
   <div id="zoom-overlay">
     <button id="zoom-close">×</button>
     <img id="zoom-img" src="" alt="">
+  </div>
+
+  <!-- 🎥 OVERLAY VIDÉO PLEIN ÉCRAN -->
+  <div id="video-overlay" style="
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.95);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:10000;
+  ">
+    <video id="final-video" src="video.mp4" controls autoplay style="
+      width:90%;
+      max-width:900px;
+      border-radius:10px;
+      box-shadow:0 0 30px rgba(255,255,255,0.2);
+    "></video>
+    <button id="close-video" style="
+      position:absolute;
+      top:1rem;
+      right:1rem;
+      background:rgba(255,255,255,0.2);
+      border:none;
+      border-radius:999px;
+      width:42px;
+      height:42px;
+      font-size:1.4rem;
+      color:#fff;
+      cursor:pointer;
+    ">✕</button>
   </div>
 
   <script>
@@ -1341,6 +1385,37 @@
     makeAllImagesZoomable();
   }
 
+  /* ==========
+     VIDEO FINALE
+     ========== */
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnContinue = document.getElementById('btn-continue');
+    const overlay = document.getElementById('video-overlay');
+    const video = document.getElementById('final-video');
+    const closeBtn = document.getElementById('close-video');
+
+    if (btnContinue && overlay && video) {
+      btnContinue.addEventListener('click', () => {
+        overlay.style.display = 'flex';
+        video.currentTime = 0;
+        video.play();
+      });
+    }
+
+    if (closeBtn && overlay) {
+      closeBtn.addEventListener('click', () => {
+        overlay.style.display = 'none';
+        video.pause();
+      });
+    }
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.style.display = 'none';
+        video.pause();
+      }
+    });
+  });
   </script>
 </body>
 </html>
