@@ -30,7 +30,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-image: url('images/A2822E90-36B1-481D-BC00-CD818C9E8DE8 2.PNG');
+      background-image: url('A2822E90-36B1-481D-BC00-CD818C9E8DE8 2.PNG');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -315,7 +315,7 @@
       position:absolute;
       width: calc(100% / 20 - 2px);
       aspect-ratio: 1/1;
-      background: url('images/voiture.png') center/contain no-repeat;
+      background: url('voiture.png') center/contain no-repeat;
       transition: transform .15s ease;
       pointer-events:none;
     }
@@ -634,8 +634,8 @@
   <main class="app">
     <!-- LOGOS -->
     <div class="hero-logos">
-      <img src="images/g1851.png" alt="Le Push" class="logo">
-      <img src="images/g177.png" alt="Murder Party" class="sub_logo">
+      <img src="g1851.png" alt="Le Push" class="logo">
+      <img src="g177.png" alt="Murder Party" class="sub_logo">
     </div>
 
     <!-- TITRE ÉNIGME -->
@@ -706,32 +706,32 @@
         <p class="game-intro">Voici les 5 factures Uber que la police a réquisitionné. Comparez les heures, les trajets et les montants.</p>
         <div class="factures-grid">
           <div class="facture-card">
-            <img src="images/1.png" alt="Facture Uber 1"
-                 data-full="images/1.png"
+            <img src="1.png" alt="Facture Uber 1"
+                 data-full="1.png"
                  onclick="openZoom(this.dataset.full || this.src)">
             <small>Facture #1</small>
           </div>
           <div class="facture-card">
-            <img src="images/2.png" alt="Facture Uber 2"
-                 data-full="images/2.png"
+            <img src="2.png" alt="Facture Uber 2"
+                 data-full="2.png"
                  onclick="openZoom(this.dataset.full || this.src)">
             <small>Facture #2</small>
           </div>
           <div class="facture-card">
-            <img src="images/3.png" alt="Facture Uber 3"
-                 data-full="images/3.png"
+            <img src="3.png" alt="Facture Uber 3"
+                 data-full="3.png"
                  onclick="openZoom(this.dataset.full || this.src)">
             <small>Facture #3</small>
           </div>
           <div class="facture-card">
-            <img src="images/4.png" alt="Facture Uber 4"
-                 data-full="images/4.png"
+            <img src="4.png" alt="Facture Uber 4"
+                 data-full="4.png"
                  onclick="openZoom(this.dataset.full || this.src)">
             <small>Facture #4</small>
           </div>
           <div class="facture-card">
-            <img src="images/5.png" alt="Facture Uber 5"
-                 data-full="images/5.png"
+            <img src="5.png" alt="Facture Uber 5"
+                 data-full="5.png"
                  onclick="openZoom(this.dataset.full || this.src)">
             <small>Facture #5</small>
           </div>
@@ -794,12 +794,12 @@
             <h2 class="enigme-title">Les derniers messages du chef..</h2>
             <p class="game-intro">Voici les 6 dernières images (faux messages) récupérées dans le téléphone du chef</p>
             <div class="final-grid">
-              <img src="images/enquete1.png" alt="Message 1" data-full="images/enquete1.png">
-              <img src="images/enquete2.png" alt="Message 2" data-full="images/enquete2.png">
-              <img src="images/enquete3.png" alt="Message 3" data-full="images/enquete3.png">
-              <img src="images/enquete4.png" alt="Message 4" data-full="images/enquete4.png">
-              <img src="images/enquete5.png" alt="Message 5" data-full="images/enquete5.png">
-              <img src="images/enquete6.png" alt="Message 6" data-full="images/enquete6.png">
+              <img src="enquete1.png" alt="Message 1" data-full="enquete1.png">
+              <img src="enquete2.png" alt="Message 2" data-full="enquete2.png">
+              <img src="enquete3.png" alt="Message 3" data-full="enquete3.png">
+              <img src="enquete4.png" alt="Message 4" data-full="enquete4.png">
+              <img src="enquete5.png" alt="Message 5" data-full="enquete5.png">
+              <img src="enquete6.png" alt="Message 6" data-full="enquete6.png">
             </div>
           </div>
 
@@ -928,13 +928,13 @@
      ========== */
   function initLecture() {
     const cartes = [
-      'images/id1.png',
-      'images/id2.png',
-      'images/id3.png',
-      'images/id4.png',
-      'images/id5.png',
-      'images/id6.png',
-      'images/id7.png'
+      'id1.png',
+      'id2.png',
+      'id3.png',
+      'id4.png',
+      'id5.png',
+      'id6.png',
+      'id7.png'
     ];
     const img = document.getElementById('image-carte');
     const btnSuiv = document.getElementById('btn-suivant');
@@ -990,7 +990,7 @@
       const card = document.createElement('div');
       card.className = 'code-card';
       card.innerHTML = `
-        <img src="images/${item.id}" alt="Carte ${idx+1}" data-full="images/${item.id}">
+        <img src="${item.id}" alt="Carte ${idx+1}" data-full="${item.id}">
         <small>Carte ${idx+1}</small>
         <input type="number" min="1" max="7" class="num-input" data-good="${item.good}">
       `;
@@ -1304,7 +1304,7 @@
       fakeMMS.innerHTML = `
         <div class="mms-content">
           📸 <strong>Message reçu !</strong><br>
-          <img src="images/mms3.jpg" alt="Indice suivant" style="max-width:200px;border-radius:8px;margin-top:.5rem;">
+          <img src="mms3.jpg" alt="Indice suivant" style="max-width:200px;border-radius:8px;margin-top:.5rem;">
         </div>
       `;
       makeAllImagesZoomable();
